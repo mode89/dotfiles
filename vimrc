@@ -1,9 +1,5 @@
 set nocompatible
 
-set runtimepath+=/opt/fzf/0.27.0/plugin
-runtime fzf.vim
-
-" let g:pathogen_disabled = ["ale"]
 execute pathogen#infect()
 Helptags
 
