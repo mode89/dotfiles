@@ -53,6 +53,11 @@ set history=1000
 
 set cursorline " Highlight cursor line
 
+let g:rainbow_active = 1
+let g:rainbow_conf = {
+\	"ctermfgs": ["black", "blue", "yellow", "magenta"],
+\}
+
 " Git acceleration
 command -nargs=* -complete=file Git !clear && git <args>
 noremap <leader>gda :Git diff
@@ -85,12 +90,34 @@ noremap <leader>as :ALESymbolSearch
 
 let g:fzf_preview_window = [] " Disable preview window
 
-noremap <leader>ff :FZF<return>
+noremap <leader>ff :Files<return>
 noremap <leader>fg :GFiles<return>
 noremap <leader>fb :Buffers<return>
+
+" npyrepl
+
+noremap <leader>rc :NpyreplConnect 
+noremap <leader>re :NpyreplEval 
+noremap <leader>rl :NpyreplEvalLines<return>
+noremap <leader>rb :NpyreplEvalBuffer<return>
+noremap <leader>rf :NpyreplEvalGlobalStatement<return>
+noremap <leader>rn :NpyreplNamespace 
+
+" conflict-marker
+
+highlight ConflictMarkerOurs ctermfg=blue
+highlight ConflictMarkerCommonAncestorsHunk ctermfg=green
+highlight ConflictMarkerTheirs ctermfg=red
 
 " Enable per-project .vimrc
 set exrc
 set secure
 
-let g:paredit_mode=0
+let g:paredit_mode=1
+
+" Suppress unnecessary output when working on remote files
+let g:netrw_silent=1
+
+" Fireplace
+autocmd FileType clojure noremap <leader>er :Eval<return>
+autocmd FileType clojure noremap <leader>eb :%Eval<return>
