@@ -121,3 +121,6 @@ let g:netrw_silent=1
 " Fireplace
 autocmd FileType clojure noremap <leader>er :Eval<return>
 autocmd FileType clojure noremap <leader>eb :%Eval<return>
+
+" Launch files
+autocmd BufNewFile,BufRead *.launch set filetype=xml
