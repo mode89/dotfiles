@@ -124,3 +124,9 @@ autocmd FileType clojure noremap <leader>eb :%Eval<return>
 
 " Launch files
 autocmd BufNewFile,BufRead *.launch set filetype=xml
+
+" Copilot
+let g:copilot_filetypes = {
+    \ "markdown": v:true,
+    \ }
+let g:copilot_balanced_parens=1
