@@ -15,6 +15,8 @@ User configuration: `~/.config/opencode/`
 - `command/` - Custom commands (`.md` files)
 - `AGENTS.md` - Global agent instructions
 
+> Note: The `opencode-help` skill is OpenCode-specific — sync only to OpenCode, skip for all other agents.
+
 # Updating Agents
 
 To sync prompts and commands to all supported agents:
