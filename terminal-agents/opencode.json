@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "external_directory": {
+      "~/.claude/**": "allow",
+      "~/.config/opencode/**": "allow"
+    },
+    "bash": {
+      "*": "ask",
+      "echo *": "allow",
+      "ls *": "allow",
+      "readlink *": "allow",
+      "stat *": "allow",
+      "true *": "allow",
+      "false *": "allow"
+    },
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow"
+  }
+}
