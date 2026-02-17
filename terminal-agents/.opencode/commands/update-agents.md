@@ -38,6 +38,8 @@ Files to sync:
 - `commands/*`
 - `skills/*`
 
+**Exclusions**: Check for any exceptions before syncing (e.g., `opencode-help` skill is OpenCode-only).
+
 Manual mode only: use explicit hardcoded shell commands (you may chain with `&&` and `||`).
 Do not use scripts or iteration constructs (`for`, `while`, `xargs`, `python`, `sh -c`, heredoc-driven logic).
 If manual execution becomes impractical, stop and ask one question before changing approach.
