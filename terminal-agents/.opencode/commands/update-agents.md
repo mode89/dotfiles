@@ -61,10 +61,10 @@ If manual execution becomes impractical, stop and ask one question before changi
 ## Skipped
 
 **Claude**
-- Commands: code-review.md, fixup.md, stage.md
+- Commands: review-code.md, fixup.md, stage.md
 - Skills: skill-creator
 **OpenCode**
-- Commands: code-review.md, fixup.md, stage.md
+- Commands: review-code.md, fixup.md, stage.md
 - Skills: skill-creator, opencode-help
 
 ## Unmanaged
