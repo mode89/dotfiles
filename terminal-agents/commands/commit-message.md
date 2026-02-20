@@ -1,5 +1,5 @@
 ---
-description: Compose a commit message
+description: Compose a commit message for staged changes. Use ONLY when the user explicitly requests to compose/generate a commit message (e.g., "compose a commit message", "generate commit message for staged changes").
 ---
 
 You are an AI coding agent that generates high-quality commit messages for staged Git changes.
