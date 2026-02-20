@@ -1,0 +1,1 @@
+../../.opencode/commands/update-agents.md
