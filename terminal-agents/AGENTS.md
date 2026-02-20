@@ -1,5 +1,9 @@
 Collection of reusable commands, skills and scripts for AI coding agents.
 
+# Conventions
+
+When referencing files from the working directory, use relative paths.
+
 # Supported Agents
 
 ## Claude Code

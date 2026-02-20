@@ -49,33 +49,33 @@ If manual execution becomes impractical, stop and ask one question before changi
 ```markdown
 ## Added
 
-**Claude**
-- Skills: new-skill
+  **Claude**
+  - Skills: new-skill
 
 ## Updated
 
-**Claude**
-- Commands: commit.md
-**OpenCode**
-- Commands: commit.md
-- Skills: skill-creator
+  **Claude**
+  - Commands: commit.md
+  **OpenCode**
+  - Commands: commit.md
+  - Skills: skill-creator
 
 ## Skipped
 
-**Claude**
-- Commands: review-code.md, fixup.md, stage.md
-- Skills: skill-creator
-**OpenCode**
-- Commands: review-code.md, fixup.md, stage.md
-- Skills: skill-creator, opencode-help
+  **Claude**
+  - Commands: review-code.md, fixup.md, stage.md
+  - Skills: skill-creator
+  **OpenCode**
+  - Commands: review-code.md, fixup.md, stage.md
+  - Skills: skill-creator, opencode-help
 
 ## Unmanaged
 
-**Claude**
-- Skills: paimel-docs
+  **Claude**
+  - Skills: paimel-docs
 
 ## Conflicted
 
-**OpenCode**
-- Skills: example-skill (destination is a regular file)
+  **OpenCode**
+  - Skills: example-skill (destination is a regular file)
 ```
