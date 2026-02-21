@@ -81,7 +81,7 @@ git status --porcelain
 
        ## Instructions
 
-       Find `git_stage.py` under `<skill-base-dir>/scripts` directory.
+       Find `git_stage.py` under `<skill-base-dir>/scripts` directory, but DO NOT read it.
        Read `<skill-base-dir>/references/staging.md` and stage only the files listed above.
        Process only target files and skip every other changed file.
        ```
