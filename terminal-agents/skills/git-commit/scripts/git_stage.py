@@ -74,7 +74,7 @@ class ChangeGroup:
     No context lines between them.
     """
 
-    old_line: int  # 1-based line of first '-' in old file (0 if insertion)
+    old_line: int  # 1-based line before which this group is applied in the old file
     old_lines: list[str]  # content of '-' lines, stripped of prefix
     new_lines: list[str]  # content of '+' lines, stripped of prefix
 
@@ -165,7 +165,7 @@ def split_into_change_groups(hunk: Hunk) -> list[ChangeGroup]:
     groups: list[ChangeGroup] = []
     old_lines: list[str] = []
     new_lines: list[str] = []
-    old_line = 0  # 1-based line of first '-' in old file (0 if insertion)
+    old_line = 0  # set when first '-' or '+' of a group is encountered
     current_old_line = hunk.old_start  # track position in old file
 
     for line in hunk.lines:
@@ -189,6 +189,16 @@ def split_into_change_groups(hunk: Hunk) -> list[ChangeGroup]:
             current_old_line += 1
         elif line.startswith("+"):
             # New line: part of current group
+            if not old_lines and not new_lines:
+                # Capture insertion position for groups that start with '+'.
+                # For pure-insertion hunks (old_count == 0), old_start is the
+                # line *after* which content is inserted, so the insert point
+                # is old_start + 1.  For regular hunks current_old_line
+                # already points to the right position.
+                if hunk.old_count == 0:
+                    old_line = current_old_line + 1
+                else:
+                    old_line = current_old_line
             new_lines.append(line[1:])  # strip prefix
         # Ignore other lines (e.g., "\ No newline at end of file")
 
@@ -815,6 +825,26 @@ def test_split_multiple_groups_from_one_hunk():
     assert group2.old_line == 13
     assert group2.old_lines == ["old b\n"]
     assert group2.new_lines == ["new b\n", "new c\n"]
+
+
+def test_split_pure_insertion_group():
+    """Pure-insertion hunk produces a ChangeGroup with the correct old_line."""
+    # @@ -3,0 +4 @@ — insert after line 3 (before line 4)
+    hunk = Hunk(
+        old_start=3,
+        old_count=0,
+        new_start=4,
+        new_count=1,
+        lines=["+inserted line\n"],
+    )
+    groups = split_into_change_groups(hunk)
+    assert len(groups) == 1
+    group = groups[0]
+    # old_count == 0 → old_start is the line *after* which we insert,
+    # so the insertion point (before which apply_hunks inserts) is 4.
+    assert group.old_line == 4
+    assert group.old_lines == []
+    assert group.new_lines == ["inserted line\n"]
 
 
 # -- parse_updates_file ------------------------------------------------------
