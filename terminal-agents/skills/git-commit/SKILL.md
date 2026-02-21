@@ -5,7 +5,11 @@ description: Intelligently commit Git changes based on context and intent. Use O
 
 # git-commit
 
-Only trigger when the user explicitly requests a commit. Extract any scope hint from the request (e.g., "commit the auth changes" → scope: auth-related changes). If no scope is provided, scope includes all changes.
+Only trigger when the user explicitly requests a commit. Extract any scope hint from the request (e.g., "commit the auth changes" → scope: auth-related changes).
+
+When no explicit scope is provided:
+- If staged changes exist, commit **only currently staged changes**.
+- If nothing is staged, no filtering is applied — all unstaged and untracked changes are in scope.
 
 ## State Detection
 
@@ -26,9 +30,13 @@ git ls-files --others --exclude-standard   # untracked files
 
 1. Run `git diff --cached` to review all staged changes
 2. → [Context Gathering](#context-gathering)
-3. If **scope provided**: check whether all staged changes match the scope
-   - Mismatched files found → list them, notify the user, ask for instructions: proceed anyway or abort?
-   - All match → continue
+3. Check scope against staged changes:
+   - **No scope**: commit exactly what is staged
+     - do not run `git add`, `git rm`, or otherwise change staging
+     - note content of remaining changes to the user
+   - **Scope provided**: verify all staged changes match the scope
+     - Mismatched changes found → list them, notify the user, ask for instructions: proceed or abort?
+     - All match → continue
 4. → [Committing](#committing)
 
 ---
