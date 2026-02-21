@@ -113,6 +113,7 @@ EOF
 ```
 
 Use imperative mood. Focus on *why*, not just *what*. Subject line ≤72 chars, body lines ≤72 chars.
+You must use a HEREDOC for git commit messages to avoid shell-escaping issues and accidental formatting errors.
 Do not add `Co-Authored-By` or any agent attribution footer.
 
 **Types**
