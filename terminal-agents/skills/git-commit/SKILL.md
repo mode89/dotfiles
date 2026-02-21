@@ -14,9 +14,7 @@ When no explicit scope is provided:
 ## State Detection
 
 ```bash
-git diff --cached --name-only              # staged files
-git diff --name-only                       # unstaged modified files
-git ls-files --others --exclude-standard   # untracked files
+git status --porcelain
 ```
 
 - Staged changes exist → **Path A**
