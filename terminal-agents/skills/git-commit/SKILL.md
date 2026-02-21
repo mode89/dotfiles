@@ -63,7 +63,7 @@ git status --porcelain
       - Rename/move with only related edits: `git add -A <old> <new>`
       - Binary file: `git add <file>`
 
-   b. If any file in the commit needs **partial hunk staging**, spawn a general-purpose subagent only for those partial files. Use the prompt template below, substituting placeholders from the context gathered in step 3, and substitute `<skill-base-dir>` with the base directory of this skill. Wait for it to complete before proceeding.
+   b. If any file appears in more than one planned commit, **partial hunk staging** is mandatory for that file. If any file in the commit needs **partial hunk staging**, spawn a general-purpose subagent only for those partial files. Use the prompt template below, substituting placeholders from the context gathered in step 3, and substitute `<skill-base-dir>` with the base directory of this skill. Wait for it to complete before proceeding.
 
        ```
        Stage the partial changes for this commit.
