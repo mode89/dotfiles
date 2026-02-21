@@ -56,12 +56,12 @@ git status --porcelain
    a. Stage trivial changes directly in the main agent (do not spawn subagent).
       Apply only to files whose entire change belongs to this commit:
 
-      - Modified tracked file (all hunks in scope): `git add -- <file>`
-      - New untracked file: `git add -- <file>`
-      - Deleted file: `git rm -- <file>`
-      - Rename/move without edits: `git add -A -- <old> <new>`
-      - Rename/move with only related edits: `git add -A -- <old> <new>`
-      - Binary file: `git add -- <file>`
+      - Modified tracked file (all hunks in scope): `git add <file>`
+      - New untracked file: `git add <file>`
+      - Deleted file: `git rm <file>`
+      - Rename/move without edits: `git add -A <old> <new>`
+      - Rename/move with only related edits: `git add -A <old> <new>`
+      - Binary file: `git add <file>`
 
    b. If any file in the commit needs **partial hunk staging**, spawn a general-purpose subagent only for those partial files. Use the prompt template below, substituting placeholders from the context gathered in step 3, and substitute `<skill-base-dir>` with the base directory of this skill. Wait for it to complete before proceeding.
 
