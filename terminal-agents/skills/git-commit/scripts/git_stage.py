@@ -497,6 +497,23 @@ def run_git_apply_cached(patch: str) -> tuple[bool, str]:
     return (success, result.stderr)
 
 
+def get_git_prefix() -> str:
+    """
+    Return the path from CWD to the git repository root.
+
+    Calls `git rev-parse --show-prefix` which outputs the CWD path
+    relative to the repository root (e.g., ``"subdir/"``), or an
+    empty string when CWD is the repository root itself.
+    """
+    result = subprocess.run(
+        ["git", "rev-parse", "--show-prefix"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return result.stdout.strip()
+
+
 # ---------------------------------------------------------------------------
 # Commands
 # ---------------------------------------------------------------------------
@@ -563,9 +580,12 @@ def cmd_apply(updates_file: str) -> None:
         print(str(e), file=sys.stderr)
         sys.exit(1)
 
-    # 4. Read old content from the index
+    # 4. Read old content from the index.
+    # index_path is root-relative: git show and git apply --cached require
+    # a path relative to the repository root, not to CWD.
+    index_path = get_git_prefix() + file_path
     try:
-        old_content = run_git_show_index(file_path)
+        old_content = run_git_show_index(index_path)
     except RuntimeError as e:
         print(str(e), file=sys.stderr)
         sys.exit(1)
@@ -581,7 +601,7 @@ def cmd_apply(updates_file: str) -> None:
         sys.exit(1)
 
     # 6. Generate a unified diff patch
-    patch = generate_patch(file_path, old_lines, new_lines)
+    patch = generate_patch(index_path, old_lines, new_lines)
 
     # 7. Pipe to git apply --cached
     success, stderr = run_git_apply_cached(patch)
@@ -1247,6 +1267,33 @@ def test_generate_patch_no_newline_at_eof():
     assert patch.count("\\ No newline at end of file") == 2
 
 
+# -- get_git_prefix ----------------------------------------------------------
+
+
+def test_get_git_prefix_at_root(monkeypatch):
+    """get_git_prefix returns empty string when CWD is the git root."""
+    fake_result = subprocess.CompletedProcess(
+        args=["git", "rev-parse", "--show-prefix"],
+        returncode=0,
+        stdout="\n",
+        stderr="",
+    )
+    monkeypatch.setattr(subprocess, "run", lambda *a, **kw: fake_result)
+    assert get_git_prefix() == ""
+
+
+def test_get_git_prefix_in_subdirectory(monkeypatch):
+    """get_git_prefix returns the prefix string including trailing slash."""
+    fake_result = subprocess.CompletedProcess(
+        args=["git", "rev-parse", "--show-prefix"],
+        returncode=0,
+        stdout="terminal-agents/\n",
+        stderr="",
+    )
+    monkeypatch.setattr(subprocess, "run", lambda *a, **kw: fake_result)
+    assert get_git_prefix() == "terminal-agents/"
+
+
 # -- cmd_updates (integration) -----------------------------------------------
 
 
@@ -1624,3 +1671,39 @@ def test_cmd_apply_nested_file(tmp_path, monkeypatch):
     # Working tree should have the modified content
     working_content = (repo / "src" / "lib" / "utils.py").read_text()
     assert working_content == "def foo():\n    return 42\n"
+
+
+def test_cmd_apply_from_subdirectory(tmp_path, monkeypatch):
+    """--apply works correctly when CWD is a subdirectory of the git root."""
+    repo = make_git_repo(tmp_path)
+    write_and_commit(repo, "subdir/example.py", "line 1\nline 2\nline 3\n")
+    unstaged_edit(repo, "subdir/example.py", "line 1\nnew line 2\nline 3\n")
+
+    # Change CWD to the subdirectory — this is the scenario being tested
+    monkeypatch.chdir(repo / "subdir")
+
+    # Updates file stores the path relative to CWD
+    updates_file = repo / "subdir" / "example.py.updates"
+    updates_file.write_text(textwrap.dedent("""\
+        file: example.py
+
+        @@old 2
+        line 2
+        @@new
+        new line 2
+        @@end
+    """))
+
+    cmd_apply(str(updates_file))
+
+    assert not updates_file.exists()
+
+    result = subprocess.run(
+        ["git", "diff", "--cached", "subdir/example.py"],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert "-line 2" in result.stdout
+    assert "+new line 2" in result.stdout
